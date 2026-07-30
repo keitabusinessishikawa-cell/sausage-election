@@ -1,7 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
+import heroLogo from "@/assets/images/hero-logo-bubble.png";
 import { useVotes } from "@/context/VoteContext";
 import { EATEN_QUANTITY_OPTIONS } from "@/data/sausages";
 
@@ -22,6 +24,15 @@ export function QuantityPicker({ onSelect }: { onSelect: () => void }) {
       className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 bg-[#fff3de] px-6 text-center"
     >
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(245,166,35,0.18),transparent_65%)]" />
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="animate-float-bob relative h-24 w-24"
+      >
+        <Image src={heroLogo} alt="いちのせきミート" fill className="object-cover rounded-full" priority />
+      </motion.div>
 
       <motion.h1
         initial={{ opacity: 0, y: 8 }}
@@ -51,6 +62,15 @@ export function QuantityPicker({ onSelect }: { onSelect: () => void }) {
           </motion.button>
         ))}
       </div>
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.4 }}
+        className="absolute inset-x-0 bottom-10 text-sm font-bold tracking-[0.15em] text-neutral-500"
+      >
+        いちのせきミート
+      </motion.p>
     </motion.div>
   );
 }

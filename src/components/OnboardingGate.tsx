@@ -3,57 +3,47 @@
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
-import { BrandSplash } from "@/components/BrandSplash";
 import { QuantityPicker } from "@/components/QuantityPicker";
 import { useVotes } from "@/context/VoteContext";
 
-type Stage = "splash" | "quantity" | "content";
+type Stage = "checking" | "quantity" | "content";
 
 // Session-only: reappears in a fresh tab/browser session, but not on reload.
 const ONBOARDED_SESSION_KEY = "sausage-election:onboarded";
 
 export function OnboardingGate({ children }: { children: React.ReactNode }) {
-  const { eatenQuantity } = useVotes();
-  const [stage, setStage] = useState<Stage>("splash");
+  const { isMyStateReady, eatenQuantity } = useVotes();
+  const [stage, setStage] = useState<Stage>("checking");
 
   useEffect(() => {
-    try {
-      if (window.sessionStorage.getItem(ONBOARDED_SESSION_KEY) === "1") {
-        setStage("content");
-      }
-    } catch {
-      // sessionStorage unavailable — fall through to the normal splash flow
-    }
-  }, []);
+    if (!isMyStateReady) return;
 
-  const markSessionOnboarded = () => {
+    let sessionOnboarded = false;
+    try {
+      sessionOnboarded = window.sessionStorage.getItem(ONBOARDED_SESSION_KEY) === "1";
+    } catch {
+      // ignore
+    }
+
+    // Already picked a quantity on this device before — no need to ask again.
+    setStage(sessionOnboarded || eatenQuantity !== null ? "content" : "quantity");
+  }, [isMyStateReady, eatenQuantity]);
+
+  const finishOnboarding = () => {
     try {
       window.sessionStorage.setItem(ONBOARDED_SESSION_KEY, "1");
     } catch {
       // ignore
     }
-  };
-
-  const finishOnboarding = () => {
-    markSessionOnboarded();
     setStage("content");
-  };
-
-  const handleSplashDone = () => {
-    // Already picked a quantity on this device before — no need to ask again.
-    if (eatenQuantity !== null) {
-      finishOnboarding();
-    } else {
-      setStage("quantity");
-    }
   };
 
   return (
     <>
+      {stage === "checking" && (
+        <div className="fixed inset-0 z-50 bg-[#fff3de]" aria-hidden />
+      )}
       <AnimatePresence>
-        {stage === "splash" && (
-          <BrandSplash key="splash" onDone={handleSplashDone} />
-        )}
         {stage === "quantity" && (
           <QuantityPicker key="quantity" onSelect={finishOnboarding} />
         )}

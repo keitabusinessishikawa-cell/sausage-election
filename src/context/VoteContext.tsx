@@ -22,6 +22,7 @@ interface MyState {
 }
 
 interface VoteContextValue {
+  isMyStateReady: boolean;
   eatenQuantity: number | null;
   eatenRemaining: number;
   chooseEatenQuantity: (quantity: number) => void;
@@ -88,9 +89,11 @@ function postVote(sausageId: string, action: VoteAction) {
 export function VoteProvider({ children }: { children: React.ReactNode }) {
   const [totals, setTotals] = useState<VoteTotals>({});
   const [myState, setMyState] = useState<MyState>(DEFAULT_MY_STATE);
+  const [isMyStateReady, setIsMyStateReady] = useState(false);
 
   useEffect(() => {
     setMyState(loadMyState());
+    setIsMyStateReady(true);
   }, []);
 
   useEffect(() => {
@@ -212,6 +215,7 @@ export function VoteProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo<VoteContextValue>(
     () => ({
+      isMyStateReady,
       eatenQuantity: myState.eatenQuantity,
       eatenRemaining: myState.eatenRemaining,
       chooseEatenQuantity,
@@ -225,6 +229,7 @@ export function VoteProvider({ children }: { children: React.ReactNode }) {
       ranking,
     }),
     [
+      isMyStateReady,
       myState.eatenQuantity,
       myState.eatenRemaining,
       myState.favoritedSausageId,
