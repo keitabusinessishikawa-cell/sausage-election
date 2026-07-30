@@ -22,6 +22,8 @@ export const ACTION_LABEL: Record<VoteAction, string> = {
   curious: "気になる",
 };
 
+export const MAX_VOTES_PER_ACTION = 5;
+
 const STARTING_SCORE = 100;
 
 export interface Sausage {

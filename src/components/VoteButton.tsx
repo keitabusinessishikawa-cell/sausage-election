@@ -1,11 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Eye, Heart, UtensilsCrossed } from "lucide-react";
+import { Eye, Heart, PartyPopper, UtensilsCrossed } from "lucide-react";
 import { useState } from "react";
 
 import { useVotes } from "@/context/VoteContext";
-import { ACTION_LABEL, POINTS, type VoteAction } from "@/data/sausages";
+import {
+  ACTION_LABEL,
+  MAX_VOTES_PER_ACTION,
+  POINTS,
+  type VoteAction,
+} from "@/data/sausages";
 
 interface VoteButtonProps {
   sausageId: string;
@@ -24,10 +29,12 @@ export function VoteButton({ sausageId, action }: VoteButtonProps) {
   const Icon = ICON[action];
   const { voteCount, addVote } = useVotes();
   const count = voteCount(sausageId, action);
+  const isMaxed = count >= MAX_VOTES_PER_ACTION;
   const [tapId, setTapId] = useState(0);
+  const [lastResult, setLastResult] = useState<"voted" | "capped">("voted");
 
   const handleTap = () => {
-    addVote(sausageId, action);
+    setLastResult(addVote(sausageId, action));
     setTapId((id) => id + 1);
   };
 
@@ -38,7 +45,9 @@ export function VoteButton({ sausageId, action }: VoteButtonProps) {
       whileTap={{ scale: 0.9 }}
       transition={{ duration: 0.12 }}
       style={{ touchAction: "manipulation" }}
-      className="relative isolate flex flex-1 flex-col items-center gap-1 overflow-visible rounded-2xl border-2 border-amber-300 bg-amber-50 py-3 text-neutral-600 shadow-[0_3px_0_0_rgba(251,191,36,0.5)] active:translate-y-0.5 active:shadow-none"
+      className={`relative isolate flex flex-1 flex-col items-center gap-1 overflow-visible rounded-2xl border-2 py-3 text-neutral-600 shadow-[0_3px_0_0_rgba(251,191,36,0.5)] active:translate-y-0.5 active:shadow-none ${
+        isMaxed ? "border-amber-400 bg-amber-100" : "border-amber-300 bg-amber-50"
+      }`}
     >
       {tapId > 0 && (
         <motion.span
@@ -47,12 +56,18 @@ export function VoteButton({ sausageId, action }: VoteButtonProps) {
           initial={{ opacity: 0.7 }}
           animate={{ opacity: 0 }}
           transition={{ duration: 0.45, ease: "easeOut" }}
-          className="absolute inset-0 -z-10 rounded-2xl bg-red-500"
+          className={`absolute inset-0 -z-10 rounded-2xl ${
+            lastResult === "capped" ? "bg-pink-400" : "bg-red-500"
+          }`}
         />
       )}
 
       {count > 0 && (
-        <span className="font-numeric absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-black text-white ring-2 ring-white">
+        <span
+          className={`font-numeric absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-black text-white ring-2 ring-white ${
+            isMaxed ? "bg-amber-500" : "bg-red-600"
+          }`}
+        >
           ×{count}
         </span>
       )}
@@ -66,28 +81,42 @@ export function VoteButton({ sausageId, action }: VoteButtonProps) {
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0"
         >
-          {BUBBLE_OFFSETS.map((x, i) => (
+          {lastResult === "voted" ? (
+            <>
+              {BUBBLE_OFFSETS.map((x, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ opacity: 1, y: 0, x: 0, scale: 0.4 }}
+                  animate={{
+                    opacity: 0,
+                    y: -36 - (i % 3) * 8,
+                    x,
+                    scale: 1,
+                  }}
+                  transition={{ duration: 0.6, delay: i * 0.03, ease: "easeOut" }}
+                  className="absolute left-1/2 top-2 h-2 w-2 rounded-full bg-amber-400"
+                />
+              ))}
+              <motion.span
+                initial={{ opacity: 0, y: 0, scale: 0.8 }}
+                animate={{ opacity: [0, 1, 1, 0], y: -26, scale: 1 }}
+                transition={{ duration: 0.7, ease: "easeOut" }}
+                className="font-numeric absolute left-1/2 top-0 -translate-x-1/2 text-xs font-bold whitespace-nowrap text-red-600"
+              >
+                +{POINTS[action]}pt
+              </motion.span>
+            </>
+          ) : (
             <motion.span
-              key={i}
-              initial={{ opacity: 1, y: 0, x: 0, scale: 0.4 }}
-              animate={{
-                opacity: 0,
-                y: -36 - (i % 3) * 8,
-                x,
-                scale: 1,
-              }}
-              transition={{ duration: 0.6, delay: i * 0.03, ease: "easeOut" }}
-              className="absolute left-1/2 top-2 h-2 w-2 rounded-full bg-amber-400"
-            />
-          ))}
-          <motion.span
-            initial={{ opacity: 0, y: 0, scale: 0.8 }}
-            animate={{ opacity: [0, 1, 1, 0], y: -26, scale: 1 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
-            className="font-numeric absolute left-1/2 top-0 -translate-x-1/2 text-xs font-bold whitespace-nowrap text-red-600"
-          >
-            +{POINTS[action]}pt
-          </motion.span>
+              initial={{ opacity: 0, y: 0, scale: 0.7 }}
+              animate={{ opacity: [0, 1, 1, 0], y: -34, scale: 1 }}
+              transition={{ duration: 1.3, ease: "easeOut" }}
+              className="absolute left-1/2 top-0 w-max max-w-[9.5rem] -translate-x-1/2 rounded-xl bg-pink-500 px-2.5 py-1.5 text-center text-[10px] leading-tight font-bold text-white shadow-lg"
+            >
+              <PartyPopper className="mx-auto mb-0.5 h-3.5 w-3.5" strokeWidth={2.5} />
+              たくさん押してくれてありがとう！
+            </motion.span>
+          )}
         </span>
       )}
     </motion.button>
