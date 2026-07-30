@@ -3,7 +3,7 @@
 @theme inline {
   --font-sans: var(--font-noto-sans-jp);
   --font-numeric: var(--font-inter);
-  --font-display: var(--font-reggae-one);
+  --font-display: var(--font-mplus-rounded);
 }
 
 :root {
@@ -81,9 +81,4 @@ button {
 
 .animate-glow-pulse {
   animation: glow-pulse 3.2s ease-in-out infinite;
-}
-
-.text-refined {
-  color: #fffaf0;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Sans_JP, Inter, Reggae_One } from "next/font/google";
+import { Noto_Sans_JP, Inter, M_PLUS_Rounded_1c } from "next/font/google";
 import "./globals.css";
 
 const notoSansJP = Noto_Sans_JP({
@@ -15,10 +15,10 @@ const inter = Inter({
   display: "swap",
 });
 
-const reggaeOne = Reggae_One({
-  variable: "--font-reggae-one",
+const mplusRounded = M_PLUS_Rounded_1c({
+  variable: "--font-mplus-rounded",
   subsets: ["latin"],
-  weight: "400",
+  weight: ["800", "900"],
   display: "swap",
 });
 
@@ -43,7 +43,7 @@ export default function RootLayout({
   return (
     <html
       lang="ja"
-      className={`${notoSansJP.variable} ${inter.variable} ${reggaeOne.variable}`}
+      className={`${notoSansJP.variable} ${inter.variable} ${mplusRounded.variable}`}
     >
       <body className="min-h-screen antialiased">{children}</body>
     </html>

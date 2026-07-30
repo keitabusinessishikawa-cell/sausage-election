@@ -1,8 +1,17 @@
 import Image from "next/image";
+import { Sparkles } from "lucide-react";
 
 import heroBackground from "@/assets/images/hero-bg-beer.png";
 import heroLogo from "@/assets/images/hero-logo-bubble.png";
 import { BeerBubbles } from "@/components/BeerBubbles";
+
+const TITLE_TILES = [
+  { char: "ソ", bg: "bg-red-500", rotate: -6, y: 2 },
+  { char: "ー", bg: "bg-amber-500", rotate: 5, y: -6 },
+  { char: "セ", bg: "bg-teal-500", rotate: -4, y: 4 },
+  { char: "ー", bg: "bg-sky-500", rotate: 6, y: -5 },
+  { char: "ジ", bg: "bg-pink-500", rotate: -3, y: 3 },
+];
 
 export function Hero() {
   return (
@@ -40,11 +49,31 @@ export function Hero() {
           <p className="text-sm font-medium tracking-[0.3em] text-amber-100">
             ICHINOSEKI MEAT
           </p>
-          <h1 className="flex flex-col items-center">
-            <span className="text-refined font-display text-5xl leading-[1] tracking-[0.02em] sm:text-6xl">
-              ソーセージ
-            </span>
-            <span className="text-refined font-display text-[3.9rem] leading-[1] tracking-[0.02em] sm:text-[4.875rem]">
+          <h1 className="flex flex-col items-center gap-4">
+            <div className="relative flex items-center gap-1.5 sm:gap-2.5">
+              <Sparkles
+                className="absolute -right-3 -top-4 h-5 w-5 rotate-12 text-amber-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] sm:-right-4 sm:-top-5 sm:h-6 sm:w-6"
+                strokeWidth={2.5}
+              />
+              {TITLE_TILES.map((tile, i) => (
+                <span
+                  key={i}
+                  className={`flex h-14 w-14 items-center justify-center rounded-2xl ${tile.bg} font-display text-2xl font-black text-white shadow-[0_4px_0_rgba(0,0,0,0.2)] sm:h-20 sm:w-20 sm:text-4xl`}
+                  style={{ transform: `rotate(${tile.rotate}deg) translateY(${tile.y}px)` }}
+                >
+                  {tile.char}
+                </span>
+              ))}
+            </div>
+            <span
+              className="font-display px-8 py-2 text-2xl font-black tracking-[0.05em] text-white sm:text-3xl"
+              style={{
+                background: "#dc2626",
+                clipPath:
+                  "polygon(4% 0%, 96% 0%, 100% 50%, 96% 100%, 4% 100%, 0% 50%)",
+                boxShadow: "0 4px 10px rgba(0, 0, 0, 0.25)",
+              }}
+            >
               総選挙
             </span>
           </h1>
