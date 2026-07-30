@@ -6,20 +6,20 @@ import sausageGarlicFrank from "@/assets/images/sausage-garlic-frank.jpg";
 import sausageKasekunacker from "@/assets/images/sausage-kasekunacker.jpg";
 import sausageMalaFrank from "@/assets/images/sausage-mala-frank.png";
 
-export const VOTE_ACTIONS = ["eaten", "wantToEat", "online"] as const;
+export const VOTE_ACTIONS = ["favorite", "eaten", "curious"] as const;
 
 export type VoteAction = (typeof VOTE_ACTIONS)[number];
 
 export const POINTS: Record<VoteAction, number> = {
-  eaten: 20,
-  wantToEat: 5,
-  online: 3,
+  favorite: 20,
+  eaten: 5,
+  curious: 3,
 };
 
 export const ACTION_LABEL: Record<VoteAction, string> = {
+  favorite: "お気に入り",
   eaten: "食べた",
-  wantToEat: "食べてみたい",
-  online: "オンライン",
+  curious: "気になる",
 };
 
 const STARTING_SCORE = 100;

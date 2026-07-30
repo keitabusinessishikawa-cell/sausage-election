@@ -1,14 +1,14 @@
-import { Heart, Smartphone, UtensilsCrossed } from "lucide-react";
+import { Eye, Heart, UtensilsCrossed } from "lucide-react";
 
 import { ACTION_LABEL, POINTS, type VoteAction } from "@/data/sausages";
 
 const ICON: Record<VoteAction, typeof UtensilsCrossed> = {
+  favorite: Heart,
   eaten: UtensilsCrossed,
-  wantToEat: Heart,
-  online: Smartphone,
+  curious: Eye,
 };
 
-const ORDER: VoteAction[] = ["eaten", "wantToEat", "online"];
+const ORDER: VoteAction[] = ["favorite", "eaten", "curious"];
 
 export function PointRules() {
   return (

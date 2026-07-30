@@ -3,7 +3,7 @@ import Image from "next/image";
 import { VoteButton } from "@/components/VoteButton";
 import type { Sausage, VoteAction } from "@/data/sausages";
 
-const ACTIONS: VoteAction[] = ["eaten", "wantToEat", "online"];
+const ACTIONS: VoteAction[] = ["favorite", "eaten", "curious"];
 
 const ORDER_MARK = ["①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧"];
 

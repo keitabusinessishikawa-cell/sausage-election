@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Heart, Smartphone, UtensilsCrossed } from "lucide-react";
+import { Eye, Heart, UtensilsCrossed } from "lucide-react";
 import { useState } from "react";
 
 import { useVotes } from "@/context/VoteContext";
@@ -13,9 +13,9 @@ interface VoteButtonProps {
 }
 
 const ICON: Record<VoteAction, typeof UtensilsCrossed> = {
+  favorite: Heart,
   eaten: UtensilsCrossed,
-  wantToEat: Heart,
-  online: Smartphone,
+  curious: Eye,
 };
 
 const BUBBLE_OFFSETS = [-16, -6, 4, 14, -10, 8];
