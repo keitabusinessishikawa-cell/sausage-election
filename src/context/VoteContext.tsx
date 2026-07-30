@@ -47,7 +47,7 @@ const POLL_INTERVAL_MS = 4000;
 
 // The server only ever stores anonymous per-item totals (sausage × action).
 // Everything about "which person did what" lives here, in the browser only.
-const MY_STATE_STORAGE_KEY = "sausage-election:my-state:v2";
+const MY_STATE_STORAGE_KEY = "sausage-election:my-state:v3";
 
 const DEFAULT_MY_STATE: MyState = {
   eatenQuantity: null,

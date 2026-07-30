@@ -9,7 +9,7 @@ import { useVotes } from "@/context/VoteContext";
 type Stage = "checking" | "quantity" | "content";
 
 // Session-only: reappears in a fresh tab/browser session, but not on reload.
-const ONBOARDED_SESSION_KEY = "sausage-election:onboarded";
+const ONBOARDED_SESSION_KEY = "sausage-election:onboarded:v2";
 
 export function OnboardingGate({ children }: { children: React.ReactNode }) {
   const { isMyStateReady, eatenQuantity } = useVotes();
