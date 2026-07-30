@@ -54,19 +54,18 @@ button {
   animation-iteration-count: infinite;
 }
 
-@keyframes sway {
+@keyframes float-bob {
   0%,
   100% {
-    transform: rotate(-7deg) translateY(0);
+    transform: translateY(0);
   }
   50% {
-    transform: rotate(7deg) translateY(-4px);
+    transform: translateY(-14px);
   }
 }
 
-.animate-sway {
-  animation: sway 3.6s ease-in-out infinite;
-  transform-origin: 50% -20%;
+.animate-float-bob {
+  animation: float-bob 3.2s ease-in-out infinite;
 }
 
 @keyframes sway-text {

@@ -31,18 +31,15 @@ export function Hero() {
       <BeerBubbles />
 
       <div className="relative z-20 flex flex-1 flex-col items-center justify-center gap-6 px-6 pb-24 pt-16 text-center">
-        <div className="animate-sway relative">
-          <div className="animate-glow-pulse absolute inset-0 -z-10 scale-150 rounded-full bg-amber-200/40 blur-2xl" />
-          <div className="h-28 w-28 overflow-hidden rounded-full shadow-[0_6px_24px_rgba(245,166,35,0.5)] ring-4 ring-white/70">
-            <Image
-              src={heroLogo}
-              alt="いちのせきミート"
-              width={112}
-              height={112}
-              preload
-              className="h-full w-full object-cover"
-            />
-          </div>
+        <div className="animate-float-bob aspect-square w-[min(21rem,78vw)] overflow-hidden rounded-full">
+          <Image
+            src={heroLogo}
+            alt="いちのせきミート"
+            width={336}
+            height={336}
+            preload
+            className="h-full w-full object-cover"
+          />
         </div>
 
         <div className="flex flex-col items-center gap-2">
