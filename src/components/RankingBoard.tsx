@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Crown, Medal } from "lucide-react";
+import { Crown, Heart, Lock, Medal } from "lucide-react";
 import Image from "next/image";
 
 import { useVotes } from "@/context/VoteContext";
@@ -52,83 +52,103 @@ const DEFAULT_EMPHASIS = {
 };
 
 export function RankingBoard() {
-  const { ranking, scores } = useVotes();
+  const { ranking, favoriteCount, hasFavorited, favoritedSausageId } = useVotes();
   const sausageById = Object.fromEntries(
     SAUSAGES.map((sausage) => [sausage.id, sausage]),
   );
-  const maxScore = Math.max(...ranking.map((id) => scores[id]), 1);
+  const maxCount = Math.max(...ranking.map((id) => favoriteCount(id)), 1);
 
   return (
-    <div className="mx-auto flex max-w-md flex-col gap-2.5">
-      {ranking.map((id, index) => {
-        const sausage = sausageById[id];
-        const style = RANK_STYLE[index] ?? DEFAULT_STYLE;
-        const emphasis = RANK_EMPHASIS[index] ?? DEFAULT_EMPHASIS;
-        const widthPercent = Math.max((scores[id] / maxScore) * 100, 6);
+    <div className="relative mx-auto flex max-w-md flex-col gap-2.5">
+      <div className={hasFavorited ? "" : "pointer-events-none select-none blur-md"}>
+        {ranking.map((id, index) => {
+          const sausage = sausageById[id];
+          const style = RANK_STYLE[index] ?? DEFAULT_STYLE;
+          const emphasis = RANK_EMPHASIS[index] ?? DEFAULT_EMPHASIS;
+          const count = favoriteCount(id);
+          const widthPercent = Math.max((count / maxCount) * 100, 6);
+          const isMine = favoritedSausageId === id;
 
-        return (
-          <motion.div
-            key={id}
-            layout
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className={`flex items-center rounded-2xl border-2 border-amber-200 bg-white shadow-[0_3px_0_0_rgba(251,191,36,0.35)] ${emphasis.card}`}
-          >
-            <span
-              className={`flex shrink-0 items-center justify-center rounded-full font-black ${style.badge} ${emphasis.badge}`}
+          return (
+            <motion.div
+              key={id}
+              layout
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className={`mb-2.5 flex items-center rounded-2xl border-2 bg-white shadow-[0_3px_0_0_rgba(251,191,36,0.35)] ${emphasis.card} ${
+                isMine ? "border-red-400" : "border-amber-200"
+              }`}
             >
-              {style.Icon ? (
-                <style.Icon
-                  className={emphasis.icon}
-                  strokeWidth={2.5}
-                  fill="currentColor"
-                />
-              ) : (
-                <span className="text-xs">{index + 1}位</span>
-              )}
-            </span>
-
-            <div
-              className={`relative shrink-0 overflow-hidden rounded-xl ${emphasis.thumb}`}
-            >
-              <Image
-                src={sausage.image}
-                alt={sausage.name}
-                fill
-                sizes="56px"
-                className="object-cover"
-              />
-            </div>
-
-            <div className="flex min-w-0 flex-1 flex-col gap-1.5">
               <span
-                className={`truncate font-bold text-neutral-800 ${emphasis.name}`}
+                className={`flex shrink-0 items-center justify-center rounded-full font-black ${style.badge} ${emphasis.badge}`}
               >
-                {sausage.name}
+                {style.Icon ? (
+                  <style.Icon
+                    className={emphasis.icon}
+                    strokeWidth={2.5}
+                    fill="currentColor"
+                  />
+                ) : (
+                  <span className="text-xs">{index + 1}位</span>
+                )}
               </span>
+
               <div
-                className={`w-full overflow-hidden rounded-full bg-amber-100 ${emphasis.bar}`}
+                className={`relative shrink-0 overflow-hidden rounded-xl ${emphasis.thumb}`}
               >
-                <motion.div
-                  animate={{ width: `${widthPercent}%` }}
-                  transition={{ type: "spring", stiffness: 200, damping: 26 }}
-                  className={`h-full rounded-full ${style.bar}`}
+                <Image
+                  src={sausage.image}
+                  alt={sausage.name}
+                  fill
+                  sizes="56px"
+                  className="object-cover"
                 />
               </div>
-            </div>
 
-            <span
-              className={`font-numeric shrink-0 font-black text-red-600 ${emphasis.points}`}
-            >
-              {scores[id].toLocaleString()}
+              <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                <span
+                  className={`flex items-center gap-1 truncate font-bold text-neutral-800 ${emphasis.name}`}
+                >
+                  {sausage.name}
+                  {isMine && <Heart className="h-3.5 w-3.5 shrink-0 text-red-500" fill="currentColor" />}
+                </span>
+                <div
+                  className={`w-full overflow-hidden rounded-full bg-amber-100 ${emphasis.bar}`}
+                >
+                  <motion.div
+                    animate={{ width: `${widthPercent}%` }}
+                    transition={{ type: "spring", stiffness: 200, damping: 26 }}
+                    className={`h-full rounded-full ${style.bar}`}
+                  />
+                </div>
+              </div>
+
               <span
-                className={`ml-0.5 font-bold text-neutral-400 ${emphasis.pointsSub}`}
+                className={`font-numeric shrink-0 font-black text-red-600 ${emphasis.points}`}
               >
-                pt
+                {count.toLocaleString()}
+                <span
+                  className={`ml-0.5 font-bold text-neutral-400 ${emphasis.pointsSub}`}
+                >
+                  票
+                </span>
               </span>
-            </span>
-          </motion.div>
-        );
-      })}
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {!hasFavorited && (
+        <div className="absolute inset-0 flex items-center justify-center px-6">
+          <div className="flex max-w-[15rem] flex-col items-center gap-2 rounded-2xl bg-white/95 px-5 py-4 text-center shadow-lg">
+            <Lock className="h-5 w-5 text-neutral-400" strokeWidth={2.25} />
+            <p className="text-sm font-bold text-neutral-600">
+              お気に入りに投票すると、
+              <br />
+              現在の順位が見られます。
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

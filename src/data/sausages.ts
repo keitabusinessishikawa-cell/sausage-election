@@ -6,25 +6,14 @@ import sausageGarlicFrank from "@/assets/images/sausage-garlic-frank.jpg";
 import sausageKasekunacker from "@/assets/images/sausage-kasekunacker.jpg";
 import sausageMalaFrank from "@/assets/images/sausage-mala-frank.png";
 
+// "favorite" is the single ranking vote (1 per person). "eaten" draws down the
+// person's own meal-count pool. "curious" is unlimited and analytics-only —
+// neither eaten nor curious affect the ranking.
 export const VOTE_ACTIONS = ["favorite", "eaten", "curious"] as const;
 
 export type VoteAction = (typeof VOTE_ACTIONS)[number];
 
-export const POINTS: Record<VoteAction, number> = {
-  favorite: 20,
-  eaten: 5,
-  curious: 3,
-};
-
-export const ACTION_LABEL: Record<VoteAction, string> = {
-  favorite: "お気に入り",
-  eaten: "食べた",
-  curious: "気になる",
-};
-
-export const MAX_VOTES_PER_ACTION = 5;
-
-const STARTING_SCORE = 100;
+export const EATEN_QUANTITY_OPTIONS = [1, 3, 5] as const;
 
 export interface Sausage {
   id: string;
@@ -32,8 +21,12 @@ export interface Sausage {
   name: string;
   badge?: string;
   image: StaticImageData;
-  startingScore: number;
+  tasteCopy: string;
+  themeColor: string;
+  shopUrl: string;
 }
+
+const SHOP_ROOT = "https://ichimeat.base.shop/";
 
 export const SAUSAGES: Sausage[] = [
   {
@@ -41,28 +34,36 @@ export const SAUSAGES: Sausage[] = [
     order: 1,
     name: "フランクフルト",
     image: sausageFrankfurter,
-    startingScore: STARTING_SCORE,
+    tasteCopy: "パキフワ食感、優しい燻製。",
+    themeColor: "#ef4444",
+    shopUrl: "https://ichimeat.base.shop/items/74653511",
   },
   {
     id: "bratwurst",
     order: 2,
     name: "ブラートヴルスト",
     image: sausageBratwurst,
-    startingScore: STARTING_SCORE,
+    tasteCopy: "ジュワっと、肉々しい。",
+    themeColor: "#f59e0b",
+    shopUrl: "https://ichimeat.base.shop/items/74653558",
   },
   {
     id: "garlic-frank",
     order: 3,
     name: "ガーリックフランク",
     image: sausageGarlicFrank,
-    startingScore: STARTING_SCORE,
+    tasteCopy: "ガツンと、ニンニクパンチ。",
+    themeColor: "#10b981",
+    shopUrl: "https://ichimeat.base.shop/items/74653595",
   },
   {
     id: "kasekunacker",
     order: 4,
     name: "ケーゼクナッカー",
     image: sausageKasekunacker,
-    startingScore: STARTING_SCORE,
+    tasteCopy: "とろりと溢れる、濃厚チーズ。",
+    themeColor: "#eab308",
+    shopUrl: "https://ichimeat.base.shop/items/74653734",
   },
   {
     id: "mala-frank",
@@ -70,15 +71,8 @@ export const SAUSAGES: Sausage[] = [
     name: "マーラーフランク",
     badge: "期間限定",
     image: sausageMalaFrank,
-    startingScore: STARTING_SCORE,
+    tasteCopy: "シビ辛で、心地よい辛さ。",
+    themeColor: "#db2777",
+    shopUrl: SHOP_ROOT,
   },
 ];
-
-export function scoreOf(
-  sausage: Sausage,
-  myVotes?: Partial<Record<VoteAction, number>>,
-): number {
-  return VOTE_ACTIONS.reduce((total, action) => {
-    return total + (myVotes?.[action] ?? 0) * POINTS[action];
-  }, sausage.startingScore);
-}

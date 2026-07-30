@@ -9,20 +9,32 @@ import {
   useState,
 } from "react";
 
-import {
-  MAX_VOTES_PER_ACTION,
-  SAUSAGES,
-  scoreOf,
-  type VoteAction,
-} from "@/data/sausages";
+import { SAUSAGES, type VoteAction } from "@/data/sausages";
 
 type VoteTotals = Record<string, Partial<Record<VoteAction, number>>>;
-type VoteResult = "voted" | "capped";
+type VoteResult = "voted" | "blocked";
+
+interface MyState {
+  eatenQuantity: number | null;
+  eatenRemaining: number;
+  eatenCounts: Record<string, number>;
+  favoritedSausageId: string | null;
+}
 
 interface VoteContextValue {
-  voteCount: (sausageId: string, action: VoteAction) => number;
-  addVote: (sausageId: string, action: VoteAction) => VoteResult;
-  scores: Record<string, number>;
+  eatenQuantity: number | null;
+  eatenRemaining: number;
+  chooseEatenQuantity: (quantity: number) => void;
+  eatenCountFor: (sausageId: string) => number;
+  voteEaten: (sausageId: string) => VoteResult;
+
+  hasFavorited: boolean;
+  favoritedSausageId: string | null;
+  voteFavorite: (sausageId: string) => VoteResult;
+
+  voteCurious: (sausageId: string) => void;
+
+  favoriteCount: (sausageId: string) => number;
   ranking: string[];
 }
 
@@ -32,34 +44,53 @@ const VoteContext = createContext<VoteContextValue | null>(null);
 // so cross-user sync relies on simple polling instead.
 const POLL_INTERVAL_MS = 4000;
 
-// Kept in localStorage only — the server never stores who voted, just totals.
-const MY_VOTES_STORAGE_KEY = "sausage-election:my-votes";
+// The server only ever stores anonymous per-item totals (sausage × action).
+// Everything about "which person did what" lives here, in the browser only.
+const MY_STATE_STORAGE_KEY = "sausage-election:my-state:v2";
 
-function loadMyVotes(): VoteTotals {
-  if (typeof window === "undefined") return {};
+const DEFAULT_MY_STATE: MyState = {
+  eatenQuantity: null,
+  eatenRemaining: 0,
+  eatenCounts: {},
+  favoritedSausageId: null,
+};
+
+function loadMyState(): MyState {
+  if (typeof window === "undefined") return DEFAULT_MY_STATE;
   try {
-    const raw = window.localStorage.getItem(MY_VOTES_STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as VoteTotals) : {};
+    const raw = window.localStorage.getItem(MY_STATE_STORAGE_KEY);
+    if (!raw) return DEFAULT_MY_STATE;
+    return { ...DEFAULT_MY_STATE, ...(JSON.parse(raw) as Partial<MyState>) };
   } catch {
-    return {};
+    return DEFAULT_MY_STATE;
   }
 }
 
-function persistMyVotes(votes: VoteTotals) {
+function persistMyState(state: MyState) {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(MY_VOTES_STORAGE_KEY, JSON.stringify(votes));
+    window.localStorage.setItem(MY_STATE_STORAGE_KEY, JSON.stringify(state));
   } catch {
     // storage unavailable (private browsing, quota) — safe to ignore
   }
 }
 
+function postVote(sausageId: string, action: VoteAction) {
+  fetch("/api/votes", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ sausageId, action }),
+  }).catch(() => {
+    // best-effort — the next poll tick will reconcile totals anyway
+  });
+}
+
 export function VoteProvider({ children }: { children: React.ReactNode }) {
   const [totals, setTotals] = useState<VoteTotals>({});
-  const [myVotes, setMyVotes] = useState<VoteTotals>({});
+  const [myState, setMyState] = useState<MyState>(DEFAULT_MY_STATE);
 
   useEffect(() => {
-    setMyVotes(loadMyVotes());
+    setMyState(loadMyState());
   }, []);
 
   useEffect(() => {
@@ -85,20 +116,29 @@ export function VoteProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  const addVote = useCallback(
-    (sausageId: string, action: VoteAction): VoteResult => {
-      const myCount = myVotes[sausageId]?.[action] ?? 0;
-      if (myCount >= MAX_VOTES_PER_ACTION) {
-        return "capped";
-      }
+  const chooseEatenQuantity = useCallback((quantity: number) => {
+    setMyState((prev) => {
+      const next: MyState = { ...prev, eatenQuantity: quantity, eatenRemaining: quantity };
+      persistMyState(next);
+      return next;
+    });
+  }, []);
 
-      setMyVotes((prev) => {
-        const current = prev[sausageId] ?? {};
-        const next = {
+  const voteEaten = useCallback(
+    (sausageId: string): VoteResult => {
+      if (myState.eatenRemaining <= 0) return "blocked";
+
+      setMyState((prev) => {
+        if (prev.eatenRemaining <= 0) return prev;
+        const next: MyState = {
           ...prev,
-          [sausageId]: { ...current, [action]: (current[action] ?? 0) + 1 },
+          eatenRemaining: prev.eatenRemaining - 1,
+          eatenCounts: {
+            ...prev.eatenCounts,
+            [sausageId]: (prev.eatenCounts[sausageId] ?? 0) + 1,
+          },
         };
-        persistMyVotes(next);
+        persistMyState(next);
         return next;
       });
 
@@ -106,53 +146,96 @@ export function VoteProvider({ children }: { children: React.ReactNode }) {
         const current = prev[sausageId] ?? {};
         return {
           ...prev,
-          [sausageId]: { ...current, [action]: (current[action] ?? 0) + 1 },
+          [sausageId]: { ...current, eaten: (current.eaten ?? 0) + 1 },
         };
       });
-
-      fetch("/api/votes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sausageId, action }),
-      })
-        .then((res) => (res.ok ? res.json() : null))
-        .then((data: { totals: VoteTotals } | null) => {
-          if (data?.totals) setTotals(data.totals);
-        })
-        .catch(() => {
-          // best-effort — the next poll tick will reconcile
-        });
+      postVote(sausageId, "eaten");
 
       return "voted";
     },
-    [myVotes],
+    [myState.eatenRemaining],
   );
 
-  const voteCount = useCallback(
-    (sausageId: string, action: VoteAction) =>
-      myVotes[sausageId]?.[action] ?? 0,
-    [myVotes],
+  const voteFavorite = useCallback(
+    (sausageId: string): VoteResult => {
+      if (myState.favoritedSausageId) return "blocked";
+
+      setMyState((prev) => {
+        if (prev.favoritedSausageId) return prev;
+        const next: MyState = { ...prev, favoritedSausageId: sausageId };
+        persistMyState(next);
+        return next;
+      });
+
+      setTotals((prev) => {
+        const current = prev[sausageId] ?? {};
+        return {
+          ...prev,
+          [sausageId]: { ...current, favorite: (current.favorite ?? 0) + 1 },
+        };
+      });
+      postVote(sausageId, "favorite");
+
+      return "voted";
+    },
+    [myState.favoritedSausageId],
   );
 
-  const scores = useMemo(() => {
-    const entries = SAUSAGES.map((sausage) => [
-      sausage.id,
-      scoreOf(sausage, totals[sausage.id]),
-    ] as const);
-    return Object.fromEntries(entries);
-  }, [totals]);
+  const voteCurious = useCallback((sausageId: string) => {
+    setTotals((prev) => {
+      const current = prev[sausageId] ?? {};
+      return {
+        ...prev,
+        [sausageId]: { ...current, curious: (current.curious ?? 0) + 1 },
+      };
+    });
+    postVote(sausageId, "curious");
+  }, []);
+
+  const eatenCountFor = useCallback(
+    (sausageId: string) => myState.eatenCounts[sausageId] ?? 0,
+    [myState.eatenCounts],
+  );
+
+  const favoriteCount = useCallback(
+    (sausageId: string) => totals[sausageId]?.favorite ?? 0,
+    [totals],
+  );
 
   const ranking = useMemo(
     () =>
       [...SAUSAGES]
-        .sort((a, b) => scores[b.id] - scores[a.id])
+        .sort((a, b) => (totals[b.id]?.favorite ?? 0) - (totals[a.id]?.favorite ?? 0))
         .map((sausage) => sausage.id),
-    [scores],
+    [totals],
   );
 
-  const value = useMemo(
-    () => ({ voteCount, addVote, scores, ranking }),
-    [voteCount, addVote, scores, ranking],
+  const value = useMemo<VoteContextValue>(
+    () => ({
+      eatenQuantity: myState.eatenQuantity,
+      eatenRemaining: myState.eatenRemaining,
+      chooseEatenQuantity,
+      eatenCountFor,
+      voteEaten,
+      hasFavorited: myState.favoritedSausageId !== null,
+      favoritedSausageId: myState.favoritedSausageId,
+      voteFavorite,
+      voteCurious,
+      favoriteCount,
+      ranking,
+    }),
+    [
+      myState.eatenQuantity,
+      myState.eatenRemaining,
+      myState.favoritedSausageId,
+      chooseEatenQuantity,
+      eatenCountFor,
+      voteEaten,
+      voteFavorite,
+      voteCurious,
+      favoriteCount,
+      ranking,
+    ],
   );
 
   return (
