@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Sparkles } from "lucide-react";
 
-import heroBackground from "@/assets/images/hero-bg-beer.png";
+import heroBackground from "@/assets/images/hero-bg-keyvisual1.png";
 import heroLogo from "@/assets/images/hero-logo-bubble.png";
 import { BeerBubbles } from "@/components/BeerBubbles";
 
@@ -22,8 +22,8 @@ export function Hero() {
         fill
         preload
         sizes="100vw"
-        className="object-cover brightness-[0.9] saturate-125 blur-[3px]"
-        style={{ objectPosition: "2% 26%" }}
+        className="object-cover brightness-[0.9] saturate-125 blur-[6px]"
+        style={{ objectPosition: "38% 40%" }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-amber-900/55 via-orange-900/40 to-[#fff3de]" />
       <div className="animate-glow-pulse absolute inset-x-0 top-0 h-2/3 bg-[radial-gradient(ellipse_at_50%_15%,rgba(255,214,138,0.3),transparent_65%)]" />
@@ -49,7 +49,7 @@ export function Hero() {
           <p className="text-sm font-medium tracking-[0.3em] text-amber-100">
             ICHINOSEKI MEAT
           </p>
-          <h1 className="flex flex-col items-center gap-4">
+          <h1 className="animate-sway-text flex flex-col items-center gap-4">
             <div className="relative flex items-center gap-1.5 sm:gap-2.5">
               <Sparkles
                 className="absolute -right-3 -top-4 h-5 w-5 rotate-12 text-amber-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)] sm:-right-4 sm:-top-5 sm:h-6 sm:w-6"

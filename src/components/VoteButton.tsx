@@ -38,7 +38,7 @@ export function VoteButton({ sausageId, action }: VoteButtonProps) {
       whileTap={{ scale: 0.9 }}
       transition={{ duration: 0.12 }}
       style={{ touchAction: "manipulation" }}
-      className="relative isolate flex flex-1 flex-col items-center gap-1 overflow-visible rounded-2xl border-2 border-amber-200 bg-white py-3 text-neutral-500"
+      className="relative isolate flex flex-1 flex-col items-center gap-1 overflow-visible rounded-2xl border-2 border-amber-300 bg-amber-50 py-3 text-neutral-600 shadow-[0_3px_0_0_rgba(251,191,36,0.5)] active:translate-y-0.5 active:shadow-none"
     >
       {tapId > 0 && (
         <motion.span

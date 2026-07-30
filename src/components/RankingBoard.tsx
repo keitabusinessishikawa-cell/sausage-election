@@ -12,6 +12,33 @@ const RANK_STYLE = [
 ];
 const DEFAULT_STYLE = { badge: "bg-red-600 text-white", bar: "bg-red-500" };
 
+const RANK_EMPHASIS = [
+  {
+    card: "gap-4 px-4 py-4",
+    badge: "h-9 w-9 text-base",
+    name: "text-lg",
+    bar: "h-3.5",
+    points: "text-lg",
+    pointsSub: "text-xs",
+  },
+  {
+    card: "gap-3.5 px-3.5 py-3.5",
+    badge: "h-8 w-8 text-sm",
+    name: "text-base",
+    bar: "h-2.5",
+    points: "text-base",
+    pointsSub: "text-[11px]",
+  },
+];
+const DEFAULT_EMPHASIS = {
+  card: "gap-3 px-3 py-3",
+  badge: "h-7 w-7 text-sm",
+  name: "text-sm",
+  bar: "h-2",
+  points: "text-sm",
+  pointsSub: "text-[10px]",
+};
+
 export function RankingBoard() {
   const { ranking, scores } = useVotes();
   const sausageById = Object.fromEntries(
@@ -24,6 +51,7 @@ export function RankingBoard() {
       {ranking.map((id, index) => {
         const sausage = sausageById[id];
         const style = RANK_STYLE[index] ?? DEFAULT_STYLE;
+        const emphasis = RANK_EMPHASIS[index] ?? DEFAULT_EMPHASIS;
         const widthPercent = Math.max((scores[id] / maxScore) * 100, 6);
 
         return (
@@ -31,19 +59,23 @@ export function RankingBoard() {
             key={id}
             layout
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="flex items-center gap-3 rounded-2xl border-2 border-amber-200 bg-white px-3 py-3 shadow-[0_3px_0_0_rgba(251,191,36,0.35)]"
+            className={`flex items-center rounded-2xl border-2 border-amber-200 bg-white shadow-[0_3px_0_0_rgba(251,191,36,0.35)] ${emphasis.card}`}
           >
             <span
-              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-black ${style.badge}`}
+              className={`flex shrink-0 items-center justify-center rounded-full font-black ${style.badge} ${emphasis.badge}`}
             >
               {index + 1}
             </span>
 
             <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-              <span className="truncate text-sm font-bold text-neutral-800">
+              <span
+                className={`truncate font-bold text-neutral-800 ${emphasis.name}`}
+              >
                 {sausage.name}
               </span>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-amber-100">
+              <div
+                className={`w-full overflow-hidden rounded-full bg-amber-100 ${emphasis.bar}`}
+              >
                 <motion.div
                   animate={{ width: `${widthPercent}%` }}
                   transition={{ type: "spring", stiffness: 200, damping: 26 }}
@@ -52,9 +84,13 @@ export function RankingBoard() {
               </div>
             </div>
 
-            <span className="font-numeric shrink-0 text-sm font-black text-red-600">
+            <span
+              className={`font-numeric shrink-0 font-black text-red-600 ${emphasis.points}`}
+            >
               {scores[id].toLocaleString()}
-              <span className="ml-0.5 text-[10px] font-bold text-neutral-400">
+              <span
+                className={`ml-0.5 font-bold text-neutral-400 ${emphasis.pointsSub}`}
+              >
                 pt
               </span>
             </span>

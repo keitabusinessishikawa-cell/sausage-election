@@ -40,10 +40,10 @@ button {
     opacity: 1;
   }
   50% {
-    transform: translate(var(--drift, 8px), -55%) scale(1.05);
+    transform: translate(var(--drift, 8px), -55vh) scale(1.05);
   }
   100% {
-    transform: translate(calc(var(--drift, 8px) * -1), -125%) scale(1.2);
+    transform: translate(calc(var(--drift, 8px) * -1), -108vh) scale(1.2);
     opacity: 0;
   }
 }
@@ -67,6 +67,21 @@ button {
 .animate-sway {
   animation: sway 3.6s ease-in-out infinite;
   transform-origin: 50% -20%;
+}
+
+@keyframes sway-text {
+  0%,
+  100% {
+    transform: rotate(-2.5deg);
+  }
+  50% {
+    transform: rotate(2.5deg);
+  }
+}
+
+.animate-sway-text {
+  animation: sway-text 4.2s ease-in-out infinite;
+  transform-origin: 50% 0%;
 }
 
 @keyframes glow-pulse {
