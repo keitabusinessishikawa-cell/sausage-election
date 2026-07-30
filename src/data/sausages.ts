@@ -6,12 +6,24 @@ import sausageGarlicFrank from "@/assets/images/sausage-garlic-frank.jpg";
 import sausageKasekunacker from "@/assets/images/sausage-kasekunacker.jpg";
 import sausageMalaFrank from "@/assets/images/sausage-mala-frank.png";
 
-// "favorite" is the single ranking vote (1 per person). "eaten" draws down the
-// person's own meal-count pool. "curious" is unlimited and analytics-only —
-// neither eaten nor curious affect the ranking.
+// "favorite" is the single ranking pick (1 per person, one-time). "eaten"
+// draws down the person's own meal-count pool. "curious" is unlimited. All
+// three feed the combined (総合) ranking, weighted by POINTS.
 export const VOTE_ACTIONS = ["favorite", "eaten", "curious"] as const;
 
 export type VoteAction = (typeof VOTE_ACTIONS)[number];
+
+export const POINTS: Record<VoteAction, number> = {
+  favorite: 100,
+  eaten: 20,
+  curious: 3,
+};
+
+export const ACTION_LABEL: Record<VoteAction, string> = {
+  favorite: "お気に入り登録",
+  eaten: "食べる登録",
+  curious: "気になる",
+};
 
 export const EATEN_QUANTITY_OPTIONS = [1, 3, 5] as const;
 

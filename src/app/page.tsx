@@ -1,5 +1,5 @@
 import { BottomCTA } from "@/components/BottomCTA";
-import { EatenRemainingBar } from "@/components/EatenRemainingBar";
+import { FavoriteStatusBar } from "@/components/FavoriteStatusBar";
 import { Hero } from "@/components/Hero";
 import { OnboardingGate } from "@/components/OnboardingGate";
 import { PointRules } from "@/components/PointRules";
@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <VoteProvider>
       <OnboardingGate>
-        <EatenRemainingBar />
+        <FavoriteStatusBar />
         <main>
           <Hero />
           <PointRules />

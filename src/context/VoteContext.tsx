@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 
-import { SAUSAGES, type VoteAction } from "@/data/sausages";
+import { POINTS, SAUSAGES, type VoteAction } from "@/data/sausages";
 
 type VoteTotals = Record<string, Partial<Record<VoteAction, number>>>;
 type VoteResult = "voted" | "blocked";
@@ -35,7 +35,7 @@ interface VoteContextValue {
 
   voteCurious: (sausageId: string) => void;
 
-  favoriteCount: (sausageId: string) => number;
+  totalScore: (sausageId: string) => number;
   ranking: string[];
 }
 
@@ -200,17 +200,24 @@ export function VoteProvider({ children }: { children: React.ReactNode }) {
     [myState.eatenCounts],
   );
 
-  const favoriteCount = useCallback(
-    (sausageId: string) => totals[sausageId]?.favorite ?? 0,
+  const totalScore = useCallback(
+    (sausageId: string) => {
+      const t = totals[sausageId] ?? {};
+      return (
+        (t.favorite ?? 0) * POINTS.favorite +
+        (t.eaten ?? 0) * POINTS.eaten +
+        (t.curious ?? 0) * POINTS.curious
+      );
+    },
     [totals],
   );
 
   const ranking = useMemo(
     () =>
       [...SAUSAGES]
-        .sort((a, b) => (totals[b.id]?.favorite ?? 0) - (totals[a.id]?.favorite ?? 0))
+        .sort((a, b) => totalScore(b.id) - totalScore(a.id))
         .map((sausage) => sausage.id),
-    [totals],
+    [totalScore],
   );
 
   const value = useMemo<VoteContextValue>(
@@ -225,7 +232,7 @@ export function VoteProvider({ children }: { children: React.ReactNode }) {
       favoritedSausageId: myState.favoritedSausageId,
       voteFavorite,
       voteCurious,
-      favoriteCount,
+      totalScore,
       ranking,
     }),
     [
@@ -238,7 +245,7 @@ export function VoteProvider({ children }: { children: React.ReactNode }) {
       voteEaten,
       voteFavorite,
       voteCurious,
-      favoriteCount,
+      totalScore,
       ranking,
     ],
   );

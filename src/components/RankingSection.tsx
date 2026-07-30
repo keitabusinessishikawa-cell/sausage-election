@@ -7,10 +7,10 @@ export function RankingSection() {
     <section className="bg-[#fff3de] px-5 py-14">
       <div className="mx-auto flex max-w-md flex-col gap-1 text-center">
         <h2 className="font-display text-2xl leading-[1] tracking-[0.02em] text-red-600">
-          リアルタイムランキング
+          総合ランキング
         </h2>
         <p className="text-sm font-medium text-neutral-500">
-          お気に入り投票のランキングです
+          お気に入り・食べる・気になるの合計ポイントです
         </p>
       </div>
 

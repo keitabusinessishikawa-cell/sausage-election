@@ -52,11 +52,11 @@ const DEFAULT_EMPHASIS = {
 };
 
 export function RankingBoard() {
-  const { ranking, favoriteCount, hasFavorited, favoritedSausageId } = useVotes();
+  const { ranking, totalScore, hasFavorited, favoritedSausageId } = useVotes();
   const sausageById = Object.fromEntries(
     SAUSAGES.map((sausage) => [sausage.id, sausage]),
   );
-  const maxCount = Math.max(...ranking.map((id) => favoriteCount(id)), 1);
+  const maxScore = Math.max(...ranking.map((id) => totalScore(id)), 1);
 
   return (
     <div className="relative mx-auto flex max-w-md flex-col gap-2.5">
@@ -65,8 +65,8 @@ export function RankingBoard() {
           const sausage = sausageById[id];
           const style = RANK_STYLE[index] ?? DEFAULT_STYLE;
           const emphasis = RANK_EMPHASIS[index] ?? DEFAULT_EMPHASIS;
-          const count = favoriteCount(id);
-          const widthPercent = Math.max((count / maxCount) * 100, 6);
+          const score = totalScore(id);
+          const widthPercent = Math.max((score / maxScore) * 100, 6);
           const isMine = favoritedSausageId === id;
 
           return (
@@ -125,11 +125,11 @@ export function RankingBoard() {
               <span
                 className={`font-numeric shrink-0 font-black text-red-600 ${emphasis.points}`}
               >
-                {count.toLocaleString()}
+                {score.toLocaleString()}
                 <span
                   className={`ml-0.5 font-bold text-neutral-400 ${emphasis.pointsSub}`}
                 >
-                  票
+                  pt
                 </span>
               </span>
             </motion.div>
