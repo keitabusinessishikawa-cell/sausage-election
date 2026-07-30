@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-noto-sans-jp);
+  --font-numeric: var(--font-inter);
+  --font-display: var(--font-zen-kaku-gothic-new);
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  background: #fff3de;
+}
+
+body {
+  background: #fff3de;
+  color: #2b1a12;
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  touch-action: manipulation;
+}
+
+@supports (padding: max(0px)) {
+  .safe-bottom {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+}
+
+@keyframes float-up {
+  0% {
+    transform: translate(0, 0) scale(0.9);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  50% {
+    transform: translate(var(--drift, 8px), -55%) scale(1.05);
+  }
+  100% {
+    transform: translate(calc(var(--drift, 8px) * -1), -125%) scale(1.2);
+    opacity: 0;
+  }
+}
+
+.animate-float-up {
+  animation-name: float-up;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+}
+
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(-7deg) translateY(0);
+  }
+  50% {
+    transform: rotate(7deg) translateY(-4px);
+  }
+}
+
+.animate-sway {
+  animation: sway 3.6s ease-in-out infinite;
+  transform-origin: 50% -20%;
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 3.2s ease-in-out infinite;
+}
+
+.text-refined {
+  color: #fffaf0;
+  text-shadow:
+    0 2px 4px rgba(120, 53, 15, 0.35),
+    0 8px 24px rgba(120, 53, 15, 0.3);
+}
