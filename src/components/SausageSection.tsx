@@ -5,7 +5,9 @@ export function SausageSection() {
   return (
     <section id="vote" className="bg-[#fff3de] px-5 py-14">
       <div className="mx-auto flex max-w-md flex-col gap-3 text-center">
-        <h2 className="font-display text-2xl text-red-600">投票する</h2>
+        <h2 className="font-display text-2xl leading-[1] tracking-[0.02em] text-red-600">
+          投票する
+        </h2>
         <p className="text-sm font-medium text-neutral-500">
           気になるソーセージをタップして応援しよう
         </p>

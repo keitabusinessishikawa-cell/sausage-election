@@ -41,10 +41,10 @@ export function Hero() {
             ICHINOSEKI MEAT
           </p>
           <h1 className="flex flex-col items-center">
-            <span className="text-refined font-display text-5xl leading-tight tracking-tight sm:text-6xl">
+            <span className="text-refined font-display text-5xl leading-[1] tracking-[0.02em] sm:text-6xl">
               ソーセージ
             </span>
-            <span className="text-refined font-display text-[3.9rem] leading-tight tracking-tight sm:text-[4.875rem]">
+            <span className="text-refined font-display text-[3.9rem] leading-[1] tracking-[0.02em] sm:text-[4.875rem]">
               総選挙
             </span>
           </h1>

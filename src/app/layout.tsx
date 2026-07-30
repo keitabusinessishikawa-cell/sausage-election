@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Sans_JP, Inter, Zen_Kaku_Gothic_New } from "next/font/google";
+import { Noto_Sans_JP, Inter, Reggae_One } from "next/font/google";
 import "./globals.css";
 
 const notoSansJP = Noto_Sans_JP({
@@ -15,10 +15,10 @@ const inter = Inter({
   display: "swap",
 });
 
-const zenKakuGothicNew = Zen_Kaku_Gothic_New({
-  variable: "--font-zen-kaku-gothic-new",
+const reggaeOne = Reggae_One({
+  variable: "--font-reggae-one",
   subsets: ["latin"],
-  weight: ["500", "700", "900"],
+  weight: "400",
   display: "swap",
 });
 
@@ -43,7 +43,7 @@ export default function RootLayout({
   return (
     <html
       lang="ja"
-      className={`${notoSansJP.variable} ${inter.variable} ${zenKakuGothicNew.variable}`}
+      className={`${notoSansJP.variable} ${inter.variable} ${reggaeOne.variable}`}
     >
       <body className="min-h-screen antialiased">{children}</body>
     </html>
