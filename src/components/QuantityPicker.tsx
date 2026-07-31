@@ -29,7 +29,7 @@ export function QuantityPicker({ onSelect }: { onSelect: () => void }) {
         className="animate-bg-scroll absolute inset-0 opacity-30"
         style={{
           backgroundImage: `url(${bgPattern.src})`,
-          backgroundSize: "240px 240px",
+          backgroundSize: "2400px 2400px",
           backgroundRepeat: "repeat",
         }}
       />
@@ -48,7 +48,11 @@ export function QuantityPicker({ onSelect }: { onSelect: () => void }) {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="font-display relative text-2xl leading-[1.3] tracking-[0.02em] text-red-600"
+        className="text-outline-white font-display relative text-2xl leading-[1.3] tracking-[0.02em] text-red-600"
+        style={{
+          textShadow:
+            "-2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff, 0 -2px 0 #fff, 0 2px 0 #fff, -2px 0 0 #fff, 2px 0 0 #fff",
+        }}
       >
         今日は
         <br />
