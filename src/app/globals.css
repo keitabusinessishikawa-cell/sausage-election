@@ -100,3 +100,16 @@ button {
 .animate-glow-pulse {
   animation: glow-pulse 3.2s ease-in-out infinite;
 }
+
+@keyframes bg-scroll {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -240px -240px;
+  }
+}
+
+.animate-bg-scroll {
+  animation: bg-scroll 40s linear infinite;
+}

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 
 import heroLogo from "@/assets/images/hero-logo-bubble.png";
+import bgPattern from "@/assets/images/quantity-bg-pattern.png";
 import { useVotes } from "@/context/VoteContext";
 import { EATEN_QUANTITY_OPTIONS } from "@/data/sausages";
 
@@ -23,13 +24,22 @@ export function QuantityPicker({ onSelect }: { onSelect: () => void }) {
       transition={{ duration: 0.35 }}
       className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 bg-[#fff3de] px-6 text-center"
     >
+      <div
+        aria-hidden
+        className="animate-bg-scroll absolute inset-0 opacity-30"
+        style={{
+          backgroundImage: `url(${bgPattern.src})`,
+          backgroundSize: "240px 240px",
+          backgroundRepeat: "repeat",
+        }}
+      />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(245,166,35,0.18),transparent_65%)]" />
 
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="animate-float-bob relative h-24 w-24"
+        className="animate-float-bob relative h-[18rem] w-[18rem]"
       >
         <Image src={heroLogo} alt="いちのせきミート" fill className="object-cover rounded-full" priority />
       </motion.div>
@@ -42,7 +52,7 @@ export function QuantityPicker({ onSelect }: { onSelect: () => void }) {
       >
         今日は
         <br />
-        何本食べますか？
+        <span className="text-[3rem] leading-none">何本</span>食べますか？
       </motion.h1>
 
       <div className="relative flex w-full max-w-xs flex-col gap-3.5">
