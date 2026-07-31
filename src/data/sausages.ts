@@ -20,8 +20,16 @@ export const POINTS: Record<VoteAction, number> = {
 };
 
 export const ACTION_LABEL: Record<VoteAction, string> = {
-  favorite: "お気に入り登録",
-  eaten: "食べる登録",
+  favorite: "お気に入り投票",
+  eaten: "食べる投票",
+  curious: "気になる投票",
+};
+
+// The "base" part of each label, for UI that highlights the trailing "投票"
+// separately so it reads clearly as a vote action.
+export const ACTION_LABEL_BASE: Record<VoteAction, string> = {
+  favorite: "お気に入り",
+  eaten: "食べる",
   curious: "気になる",
 };
 

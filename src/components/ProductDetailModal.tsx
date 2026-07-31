@@ -5,7 +5,7 @@ import { ExternalLink, UtensilsCrossed, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 
-import type { Sausage } from "@/data/sausages";
+import { ACTION_LABEL_BASE, type Sausage } from "@/data/sausages";
 
 const ORDER_MARK = ["①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧"];
 
@@ -81,7 +81,10 @@ export function ProductDetailModal({ sausage, mode, onClose }: ProductDetailModa
           {mode === "eaten" ? (
             <p className="flex items-center gap-1.5 text-sm font-bold text-red-600">
               <UtensilsCrossed className="h-4 w-4" strokeWidth={2.5} />
-              食べる登録をしました！
+              <span>
+                {ACTION_LABEL_BASE.eaten}
+                <span className="text-base font-black">投票</span>をしました！
+              </span>
             </p>
           ) : (
             <a

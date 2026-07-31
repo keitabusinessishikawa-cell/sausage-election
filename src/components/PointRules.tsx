@@ -1,6 +1,6 @@
 import { Eye, Heart, UtensilsCrossed } from "lucide-react";
 
-import { ACTION_LABEL, POINTS, type VoteAction } from "@/data/sausages";
+import { ACTION_LABEL_BASE, POINTS, type VoteAction } from "@/data/sausages";
 
 const RULES: { action: VoteAction; Icon: typeof Heart; detail: string }[] = [
   { action: "favorite", Icon: Heart, detail: "1人1回まで" },
@@ -27,7 +27,10 @@ export function PointRules() {
               {POINTS[action]}
               <span className="ml-0.5 text-xs font-bold text-amber-500">pt</span>
             </p>
-            <p className="text-xs font-black text-neutral-800">{ACTION_LABEL[action]}</p>
+            <p className="whitespace-nowrap text-xs font-bold text-neutral-800">
+              {ACTION_LABEL_BASE[action]}
+              <span className="text-sm font-black text-red-600">投票</span>
+            </p>
             <p className="text-[11px] font-bold text-neutral-500">{detail}</p>
           </div>
         ))}

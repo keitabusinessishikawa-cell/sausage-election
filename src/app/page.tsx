@@ -16,7 +16,6 @@ export default function Home() {
         <main>
           <Hero />
           <PointRules />
-          <RankingSection />
           <SausageSection />
           <RankingSection />
           <BottomCTA />

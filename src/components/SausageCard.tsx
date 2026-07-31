@@ -9,7 +9,7 @@ import { FavoriteCelebration } from "@/components/FavoriteCelebration";
 import { FavoriteConfirmModal } from "@/components/FavoriteConfirmModal";
 import { ProductDetailModal } from "@/components/ProductDetailModal";
 import { useVotes } from "@/context/VoteContext";
-import type { Sausage } from "@/data/sausages";
+import { ACTION_LABEL_BASE, type Sausage } from "@/data/sausages";
 
 const ORDER_MARK = ["①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧"];
 
@@ -121,7 +121,10 @@ export function SausageCard({ sausage }: { sausage: Sausage }) {
               </span>
             )}
             <UtensilsCrossed className="h-4 w-4" strokeWidth={2.25} />
-            <span className="text-[11px] font-bold">食べた！</span>
+            <span className="text-xs font-bold">
+              {ACTION_LABEL_BASE.eaten}
+              <span className={`font-black ${eatenDisabled ? "" : "text-red-600"}`}>投票</span>
+            </span>
           </button>
 
           <button
@@ -131,7 +134,10 @@ export function SausageCard({ sausage }: { sausage: Sausage }) {
             className="flex flex-1 flex-col items-center gap-1 rounded-xl border-2 border-neutral-200 bg-white py-2.5 text-neutral-500"
           >
             <Eye className="h-4 w-4" strokeWidth={2.25} />
-            <span className="text-[11px] font-bold">気になる</span>
+            <span className="text-xs font-bold">
+              {ACTION_LABEL_BASE.curious}
+              <span className="font-black text-red-600">投票</span>
+            </span>
           </button>
         </div>
       </div>

@@ -3,6 +3,7 @@
 import { Heart } from "lucide-react";
 
 import { useVotes } from "@/context/VoteContext";
+import { ACTION_LABEL_BASE } from "@/data/sausages";
 
 export function FavoriteStatusBar() {
   const { eatenQuantity, hasFavorited } = useVotes();
@@ -19,7 +20,10 @@ export function FavoriteStatusBar() {
         }`}
       >
         <Heart className="h-4 w-4" strokeWidth={2.5} fill={hasFavorited ? "none" : "currentColor"} />
-        お気に入り登録：残り{remaining}本
+        <span>
+          {ACTION_LABEL_BASE.favorite}
+          <span className="text-base font-black">投票</span>：残り{remaining}本
+        </span>
       </div>
     </div>
   );

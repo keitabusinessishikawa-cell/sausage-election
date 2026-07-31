@@ -3,6 +3,7 @@
 import { ChevronRight, UtensilsCrossed } from "lucide-react";
 
 import { useVotes } from "@/context/VoteContext";
+import { ACTION_LABEL_BASE } from "@/data/sausages";
 
 function scrollToVote() {
   document.getElementById("vote")?.scrollIntoView({ behavior: "smooth" });
@@ -22,7 +23,10 @@ export function StickyCTA() {
         <UtensilsCrossed className="h-5 w-5 shrink-0 text-amber-300" strokeWidth={2.25} />
         <span className="flex min-w-0 flex-1 flex-col items-start leading-tight">
           <span className="text-[10px] font-medium text-red-100">タップして商品を見る</span>
-          <span className="text-sm font-black">食べる登録：残り{eatenRemaining}本</span>
+          <span className="text-sm font-black">
+            {ACTION_LABEL_BASE.eaten}
+            <span className="text-base font-black text-amber-300">投票</span>：残り{eatenRemaining}本
+          </span>
         </span>
         <ChevronRight className="h-5 w-5 shrink-0 text-red-100" strokeWidth={2.5} />
       </button>
